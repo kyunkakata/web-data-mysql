@@ -1,30 +1,15 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-
+const mysql = require("mysql");
 const app = express();
+const config = require("./app/config/db.config");
+const connection = mysql.createConnection(config);
 
-var corsOptions = {
-  origin: "http://localhost:8081",
-};
-
-app.use(cors(corsOptions));
-
-const db = require("./app/models");
-db.sequelize.sync();
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+connection.connect(function (err) {
+  err ? console.log(err) : console.log(connection);
 });
 
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+app.get("/api/news", (req, res) => {
+  res.json({ message: "I am a message from Server!" });
 });
+
+app.listen(4000, () => console.log("App listening on port 4000"));
